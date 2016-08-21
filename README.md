@@ -20,7 +20,7 @@ Interact with the library in its native language with a common, straightforward 
 
 Make calls to the library using standard TCP sockets from any platform, anywhere.
 
-#### Quick start tutorial
+**Quick start tutorial**
 
 Visit the {http://libroute.io/getting-started getting started} page for a 5 minute tutorial on using libroute.
 
@@ -106,7 +106,7 @@ See the libroute-component gem for more information on how to do this.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/xsresearch/libroute-ruby-client.
+Bug reports and pull requests are welcome on GitHub at https://github.com/xsresearch/libroute-client-ruby
 
 ## License
 
