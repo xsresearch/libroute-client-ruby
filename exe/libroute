@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'libroute'
+
+
+  options = Libroute.parse(ARGV)
+
+  if options.library.empty?
+    puts "Error: No LIBRARY specified"
+    exit 1
+  end
+
+  if !options.build.empty?
+    puts "Building #{options.library} library... (todo)"
+    Libroute.build(options)
+    exit 0
+  end
+
+  puts "Running #{options.library} library... (todo)"
+  
+  params = options.params.split(",")
+  paramshash = Hash.new
+  params.each do |p|
+    key,val = p.split("=",2)
+    paramshash[key]=val
+  end
+
+  result = Libroute.exec(options.library, paramshash)
+
+  result.each do |k,v|
+    puts k + ": " + v
+  end
+
