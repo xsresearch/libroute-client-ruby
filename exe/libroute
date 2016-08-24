@@ -16,8 +16,6 @@ require 'libroute'
     exit 0
   end
 
-  puts "Running #{options.library} library... (todo)"
-  
   params = options.params.split(",")
   paramshash = Hash.new
   params.each do |p|
@@ -26,8 +24,16 @@ require 'libroute'
   end
 
   result = Libroute.exec(options.library, paramshash)
-
-  result.each do |k,v|
-    puts k + ": " + v
+  if !result['stdout'].nil?
+    bb = result['stdout'].data
+    puts bb.to_s
+  else
+    result.each do |k,v|
+      if v.length < 100
+        puts k + ": " + v
+      else
+        puts k + ": #{v.length} bytes"
+      end
+    end
   end
 

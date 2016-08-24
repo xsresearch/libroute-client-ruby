@@ -52,7 +52,9 @@ module Libroute
     s = TCPSocket.new(ip_address, 2000)
     s.write(params.to_bson.to_s)
     s.close_write
-    outp = Hash.from_bson(BSON::ByteBuffer.new(s.read))
+    data = s.read
+    bb = BSON::ByteBuffer.new(data)
+    outp = Hash.from_bson(bb)
     s.close
 
     # Return response
