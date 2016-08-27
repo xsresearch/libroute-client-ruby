@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'libroute'
-
+require 'bson'
 
   options = Libroute.parse(ARGV)
 
@@ -11,22 +11,37 @@ require 'libroute'
   end
 
   if !options.build.empty?
-    puts "Building #{options.library} library... (todo)"
+    puts "Building #{options.library} library..."
     Libroute.build(options)
     exit 0
   end
 
-  params = options.params.split(",")
+  # Populate params
   paramshash = Hash.new
-  params.each do |p|
-    key,val = p.split("=",2)
-    paramshash[key]=val
+  if !options.params.empty?
+    params = options.params.split(",")
+    params.each do |p|
+      key,val = p.split("=",2)
+      paramshash[key]=val
+    end
+  end
+
+  # Populate stdin
+  if !$stdin.tty?
+    data = $stdin.read
+    if !data.nil?
+      paramshash['stdin'] = BSON::Binary.new(data)
+    end
   end
 
   result = Libroute.exec(options.library, paramshash)
   if !result['stdout'].nil?
-    bb = result['stdout'].data
-    puts bb.to_s
+    if result['stdout'].is_a?(String)
+      puts result['stdout']
+    else
+      bb = result['stdout'].data
+      puts bb.to_s
+    end
   else
     result.each do |k,v|
       if v.length < 100

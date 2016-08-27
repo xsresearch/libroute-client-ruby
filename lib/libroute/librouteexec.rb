@@ -50,7 +50,8 @@ module Libroute
     #s.close
 
     s = TCPSocket.new(ip_address, 2000)
-    s.write(params.to_bson.to_s)
+    bb = params.to_bson
+    s.write(bb.get_bytes(bb.length))
     s.close_write
     data = s.read
     bb = BSON::ByteBuffer.new(data)
