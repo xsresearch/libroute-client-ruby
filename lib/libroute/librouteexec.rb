@@ -4,12 +4,16 @@ module Libroute
 
   def build(options)
     puts "Building #{options.library} from directory #{options.build}"
-    im = Docker::Image.build_from_dir(options.build) do |v|
-      if (log = JSON.parse(v)) && log.has_key?("stream")
-        puts log["stream"]
+    begin
+      im = Docker::Image.build_from_dir(options.build) do |v|
+        if (log = JSON.parse(v)) && log.has_key?("stream")
+          puts log["stream"]
+        end
       end
+      im.tag('repo' => 'libroute_image-'+options.library)
+    rescue
+      puts "Libroute: An error occurred during the build process.\n\n"
     end
-    im.tag('repo' => 'libroute_image-'+options.library)
   end
 
   def exec(library, params)
