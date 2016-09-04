@@ -33,7 +33,22 @@ module Libroute
     if c.length == 0
 
       # Launch container from image
-      image = Docker::Image.all.select{|x| x.info['RepoTags'][0].split(':')[0].include?('libroute_image-' + library)}.first
+
+      imagemap = Docker::Image.all.flat_map{|x| x.info['RepoTags'].count == 1 ? [[x.info['RepoTags'][0],x]] : x.info['RepoTags'].map{|y| [y,x]} }
+        # This command splits multiple tags into a flat vector
+        # -> imagemap is a vector of length equal to the number of images
+        # => each elements is a vector of length 2: [tag, image]
+
+      imagesel = imagemap.select{|x| x[0].split(':')[0].include?('libroute_image-' + library)}
+
+      if imagesel.count == 0
+        h = Hash.new
+        h['stderr'] = 'Image not found'
+        return h
+      end
+
+      image = imagesel[0][1]
+
       c = Docker::Container.create('Image' => image.id, 'name' => 'libroute_instance-' + library, 'Tty' => true)
       c.start
 
