@@ -14,7 +14,8 @@ module Libroute
     options = OpenStruct.new
     options.library = []
     options.build = []
-    options.params = []
+    options.param = []
+    options.file = []
     options.showhelp = false
 
     opt_parser = OptionParser.new do |opts|
@@ -40,8 +41,12 @@ module Libroute
         options.build = o
       end
 
-      opts.on("-p","--params PARAMETERS","Parameters","Comma separated list of parameters") do |p|
-        options.params = p
+      opts.on("-p","--param PARAMETER","Specify parameter in the form -p param=value") do |p|
+        options.param.push p
+      end
+
+      opts.on("-f","--file FILE","Specify parameter in the form -f param=file","  Use - for file to read from stdin") do |f|
+        options.file.push f
       end
 
       opts.on_tail("-h", "--help", "Show command options","Show library options (-l LIBRARY)") do |h|

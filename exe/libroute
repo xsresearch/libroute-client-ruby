@@ -18,19 +18,31 @@ require 'bson'
 
   # Populate params
   paramshash = Hash.new
-  if !options.params.empty?
-    params = options.params.split(",")
-    params.each do |p|
+  if !options.param.empty?
+    options.param.each do |p|
       key,val = p.split("=",2)
       paramshash[key]=val
     end
   end
 
-  # Populate stdin
-  if !$stdin.tty?
-    data = $stdin.read
-    if !data.nil?
-      paramshash['stdin'] = BSON::Binary.new(data)
+  # Populate files
+  if !options.file.empty?
+      options.file.each do |p|
+      key,val = p.split("=",2)
+      if val.eql?('-')
+        fileval = $stdin.read
+      else
+        begin
+          fileval = File.read(val)
+        rescue
+          fileval = nil
+        end
+      end
+      if fileval.nil?
+        puts "Failed to read file: #{val}"
+        exit 1
+      end
+      paramshash[key] = BSON::Binary.new(fileval)
     end
   end
 
