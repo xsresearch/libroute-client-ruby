@@ -16,7 +16,7 @@ module Libroute
     end
   end
 
-  def exec(library, params)
+  def exec(library, params, opts={})
 
     # Check if existing container running
     c = Docker::Container.all(all: true).select{|c| c.info['Names'][0].eql?('/libroute_instance-' + library)}
@@ -49,7 +49,7 @@ module Libroute
 
       image = imagesel[0][1]
 
-      c = Docker::Container.create('Image' => image.id, 'name' => 'libroute_instance-' + library, 'Tty' => true)
+      c = Docker::Container.create({'Image' => image.id, 'name' => 'libroute_instance-' + library, 'Tty' => true}.merge(opts))
       c.start
 
       # Wait for container to start

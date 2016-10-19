@@ -47,11 +47,11 @@ require 'bson'
   end
 
   result = Libroute.exec(options.library, paramshash)
-  if !result['stdout'].nil?
-    if result['stdout'].is_a?(String)
-      puts result['stdout']
+  if !result['output'].nil?
+    if result['output'].is_a?(String)
+      puts result['output']
     else
-      bb = result['stdout'].data
+      bb = result['output'].data
       puts bb.to_s
     end
   else
