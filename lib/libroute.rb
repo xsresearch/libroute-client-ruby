@@ -4,6 +4,8 @@ require 'optparse/time'
 require 'ostruct'
 require 'pp'
 require 'bson'
+require 'uri'
+require 'net/http'
 
 require 'libroute/librouteexec'
 require 'libroute/librouteparse'

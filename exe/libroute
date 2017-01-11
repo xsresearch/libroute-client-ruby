@@ -46,6 +46,27 @@ require 'bson'
     end
   end
 
+  # Upload only
+  if options.upload == true
+    puts "Uploading #{options.library} library..."
+    Libroute.upload(options, paramshash)
+    exit 0
+  end
+
+  # Execute locally
+  if options.library.eql?('RACK')
+    require 'rack'
+    r = Rack::Builder.parse_file('config.ru')
+    app = r[0]
+    if paramshash.values.length == 1
+      h = Hash.from_bson(BSON::ByteBuffer.new(paramshash.values[0].data))
+      resp = app.call(h)
+      puts resp.to_bson
+    end
+    exit 0
+  end
+
+  # Otherwise build
   result = Libroute.exec(options.library, paramshash)
   if !result['output'].nil?
     if result['output'].is_a?(String)

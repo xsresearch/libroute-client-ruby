@@ -14,6 +14,7 @@ module Libroute
     options = OpenStruct.new
     options.library = []
     options.build = []
+    options.upload = false
     options.param = []
     options.file = []
     options.showhelp = false
@@ -39,6 +40,10 @@ module Libroute
 
       opts.on("-b","--build DIR","Build the library from the specified directory") do |o|
         options.build = o
+      end
+
+      opts.on("-u","--upload","Uploads the specified tarfile. Specify the location using the 'tarfile' parameter.") do |o|
+        options.upload = true
       end
 
       opts.on("-p","--param PARAMETER","Specify parameter in the form -p param=value") do |p|

@@ -2,6 +2,28 @@ module Libroute
 
   class << self
 
+  def upload(options, params)
+    if params['tarfile'].nil?
+      puts "Parameter 'tarfile' not specified"
+      exit 1
+    end
+    
+    user = ENV['LIBROUTE_USER']
+    host = ENV['LIBROUTE_HOST']
+    port = ENV['LIBROUTE_PORT']
+
+    if user.nil? then puts "Environment variable LIBROUTE_USER not defined" ; exit 1 end
+    if host.nil? then host = "libroute.io" end
+    if port.nil? then port = 80 end
+
+    uri = URI.parse("http://#{host}:#{port}/#{user}/libraries/#{options.library}/upload")
+    header = {'Content-Type': 'application/octet-stream'}
+    http = Net::HTTP.new(uri.host, uri.port)
+    request = Net::HTTP::Post.new(uri.request_uri, header)
+    request.body = params['tarfile'].data
+    response = http.request(request)
+  end
+
   def build(options)
     puts "Building #{options.library} from directory #{options.build}"
     begin
