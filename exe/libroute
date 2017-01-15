@@ -56,8 +56,6 @@ require 'bson'
   # Execute locally
   if options.library.eql?('RACK')
     require 'rack'
-    r = Rack::Builder.parse_file('config.ru')
-    app = r[0]
     if paramshash['dir'].nil?
       puts "No dir parameter specified"
       exit 0
@@ -67,6 +65,8 @@ require 'bson'
       exit 0
     end
     Dir.chdir(paramshash['dir'])
+    r = Rack::Builder.parse_file('config.ru')
+    app = r[0]
     h = Hash.from_bson(BSON::ByteBuffer.new(paramshash['stdin'].data))
     resp = app.call(h)
     puts resp.to_bson
