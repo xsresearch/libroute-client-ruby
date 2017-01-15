@@ -58,11 +58,18 @@ require 'bson'
     require 'rack'
     r = Rack::Builder.parse_file('config.ru')
     app = r[0]
-    if paramshash.values.length == 1
-      h = Hash.from_bson(BSON::ByteBuffer.new(paramshash.values[0].data))
-      resp = app.call(h)
-      puts resp.to_bson
+    if paramshash['dir'].nil?
+      puts "No dir parameter specified"
+      exit 0
     end
+    if paramshash['stdin'].nil?
+      puts "No stdin parameter specified"
+      exit 0
+    end
+    Dir.chdir(paramshash['dir'])
+    h = Hash.from_bson(BSON::ByteBuffer.new(paramshash['stdin'].data))
+    resp = app.call(h)
+    puts resp.to_bson
     exit 0
   end
 
